@@ -31,7 +31,7 @@ cnvkit.py batch \
     --output-dir results/ \
     --diagram --scatter
 
-    # 1.1b) Alternative, if the reference.cnn is already available, then run:
+    # 1.1b) Alternatively, if the reference.cnn is already available, then run:
 cnvkit.py batch \
     $TUMOR_BAM \
     -r my_reference.cnn \
@@ -45,7 +45,15 @@ cnvkit.py diagram \
     -s results/${TUMOR_BAM_base}.cns \
     -o results/${TUMOR_BAM_base}-diagram.pdf
 
-    # 1.2) After running 1.1a or 1.1b, do re-centering (optional)
+    # 1.2) Generate nexus-ogt format file. Note that the Tumor and Normal sample name in VCF file (FreeBayes output) should be $TUMOR_BAM_base and $GERMLINE_BAM_base
+cnvkit.py export nexus-ogt \
+    -i $TUMOR_BAM_base \
+    -n $GERMLINE_BAM_base \
+    -o results/${TUMOR_BAM_base}.nexus-ogt \
+    results/${TUMOR_BAM_base}.cnr \
+    /path/to/${TUMOR_BAM_base}_FB_final_vcf
+
+    # 1.3) After running 1.1a or 1.1b, do re-centering (optional)
 cnvkit.py call ${TUMOR_BAM_base}.cnr  --purity $Purity --center-at $Diploid_logR -m clonal -x $Gender -o ${TUMOR_BAM_base}.call.cnr
 cnvkit.py call ${TUMOR_BAM_base}.cns  --purity $Purity --center-at $Diploid_logR -m clonal -x $Gender -v $Germline_vcf -o ${TUMOR_BAM_base}.call.cns
 
