@@ -20,6 +20,7 @@ conda activate ck2
 cnvkit.py batch $work_dir/BAM/${Pat_ID}_${BCB}_preprocessed.bam -r ./resources/SmallGenePanel_bed/myflatref/sgp_1_FlatReference.cnn -d $work_dir/CNVkit
 cnvkit.py scatter $work_dir/CNVkit/${Pat_ID}_${BCB}_preprocessed.cnr -s $work_dir/CNVkit/${Pat_ID}_${BCB}_preprocessed.cns -o $work_dir/CNVkit/${Pat_ID}_${BCB}_preprocessed-scatter.pdf
 cnvkit.py diagram $work_dir/CNVkit/${Pat_ID}_${BCB}_preprocessed.cnr -s $work_dir/CNVkit/${Pat_ID}_${BCB}_preprocessed.cns -o $work_dir/CNVkit/${Pat_ID}_${BCB}_preprocessed-diagram.pdf
+cnvkit.py export nexus-basic -o $work_dir/CNVkit/${Pat_ID}_${BCB}_preprocessed.nexus-basic $work_dir/CNVkit/${Pat_ID}_${BCB}_preprocessed.cnr
 
 # Delly
 ./softwares/delly call -g $genome -o $work_dir/Delly/${Pat_ID}_${BCB}.delly.bcf $work_dir/BAM/${Pat_ID}_${BCB}_preprocessed.bam
