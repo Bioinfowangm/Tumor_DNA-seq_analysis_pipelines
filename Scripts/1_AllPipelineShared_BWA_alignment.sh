@@ -94,8 +94,3 @@ java -Xmx30G -Djava.io.tmpdir=$work_dir/TMP -jar ./softwares/gatk_3.6.0/GenomeAn
     -R $genome \
     --BAIT_INTERVALS ./resources/SmallGenePanel_bed/sgp_1_baits.interval_list \
     --TARGET_INTERVALS ./resources/SmallGenePanel_bed/sgp_1_targets.interval_list
-
-# submit Step2
-system("sbatch 2_Mutation_calling.sh $work_dir $BCB $genome $SL_ID_seq $Pat_ID");
-# submit Step3
-system("sbatch 3_CNV_SV.sh $work_dir $BCB $genome $SL_ID_seq $Pat_ID");
