@@ -80,6 +80,7 @@ bcftools norm -O v -o $work_dir/Hotspots/${Pat_ID}_${BCB}.HS.Final.vcf \
     $work_dir/Hotspots/${Pat_ID}_${BCB}.HS.vcf
 
 ## Merge SNVs/Indels from the above 3 tools, annotate with ANNOVAR and perform some filtering
-perl ./softwares/obtain_var_for_annovar.pl $work_dir $Pat_ID $BCB
-table_annovar.pl $work_dir/SNV_Indel/${Pat_ID}_$BCB.input ./resources/Annovar/humandb/ --buildver hg19 --otherinfo --thread 5 --remove --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic89,cbio2019jun,clinvar2019mar,ljb26_all --outfile $work_dir/SNV_Indel/${Pat_ID}_$BCB.annovar
-perl ./softwares/filter_after_annovar.pl $work_dir $Pat_ID $BCB
+## replaced by ANNOVAR annotation for each of the above VCFs
+#perl ./softwares/obtain_var_for_annovar.pl $work_dir $Pat_ID $BCB
+#table_annovar.pl $work_dir/SNV_Indel/${Pat_ID}_$BCB.input ./resources/Annovar/humandb/ --buildver hg19 --otherinfo --thread 5 --remove --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic89,cbio2019jun,clinvar2019mar,ljb26_all --outfile $work_dir/SNV_Indel/${Pat_ID}_$BCB.annovar
+#perl ./softwares/filter_after_annovar.pl $work_dir $Pat_ID $BCB
