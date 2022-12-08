@@ -44,7 +44,6 @@ gatk LeftAlignAndTrimVariants \
     -no-trim true --split-multi-allelics true
 
 # B) FreeBayes
-
 freebayes-parallel \
     /path/to/region_file 5 \
     -f /path/to/genome \
