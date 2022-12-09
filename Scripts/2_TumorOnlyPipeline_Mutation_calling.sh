@@ -50,6 +50,9 @@ table_annovar.pl \
     --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic89,cbio2019jun,clinvar2019mar,ljb26_all \
     --outfile /path/to/${Pat_ID}_${BCB}.MT2.annovar
 
+perl filter_after_annovar.pl /path/to/${Pat_ID}_${BCB}.MT2.annovar.hg19_multianno.txt /path/to/${Pat_ID}_${BCB}.MT2.annovar.hg19_multianno_filtered.txt
+
+
 ##Tool2: FreeBayes
 freebayes \
     -f $genome \
@@ -82,6 +85,7 @@ table_annovar.pl \
     --vcfinput  --otherinfo  --thread 5 --remove \
     --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic89,cbio2019jun,clinvar2019mar,ljb26_all \
     --outfile /path/to/${Pat_ID}_${BCB}.FB.annovar
+perl filter_after_annovar.pl /path/to/${Pat_ID}_${BCB}.FB.annovar.hg19_multianno.txt /path/to/${Pat_ID}_${BCB}.FB.annovar.hg19_multianno_filtered.txt
 
 ##Tool3: Bcftools (cancer hotspot locations only)
 bcftools mpileup -O v -f $genome \
@@ -100,3 +104,4 @@ table_annovar.pl \
     --vcfinput  --otherinfo  --thread 5 --remove \
     --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic89,cbio2019jun,clinvar2019mar,ljb26_all \
     --outfile /path/to/${Pat_ID}_${BCB}.HS.annovar
+perl filter_after_annovar.pl /path/to/${Pat_ID}_${BCB}.HS.annovar.hg19_multianno.txt /path/to/${Pat_ID}_${BCB}.HS.annovar.hg19_multianno_filtered.txt
