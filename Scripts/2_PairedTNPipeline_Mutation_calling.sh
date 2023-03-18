@@ -45,7 +45,7 @@ gatk LeftAlignAndTrimVariants \
 
 # B) FreeBayes
 freebayes-parallel \
-    /path/to/region_file 5 \
+    ../Resources/FreeBayes_region.txt 5 \
     -f /path/to/genome \
     -b /path/to/tumor_bam \
     -b /path/to/normal_bam \
