@@ -101,4 +101,6 @@ table_annovar.pl \
     --vcfinput  --otherinfo  --thread 5 --remove \
     --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic89,cbio2019jun,clinvar2019mar,ljb26_all \
     --outfile /path/to/${Pat_ID}_${BCB}.HS.annovar
+
+##Finally, filter the annovar outputs of the above three tools
 python filter_after_annovar.py ${Pat_ID}_${BCB}
