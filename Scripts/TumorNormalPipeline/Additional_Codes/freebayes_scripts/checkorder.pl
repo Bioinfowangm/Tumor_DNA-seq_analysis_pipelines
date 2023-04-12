@@ -5,6 +5,7 @@ use warnings;
 
 my $input  = $ARGV[0];
 my $output = $ARGV[1];
+my $ctl_name = $ARGV[2];
 open I_f, $input;
 open O_f, ">$output";
 
@@ -12,7 +13,7 @@ chomp(my @lines = <I_f>);
 
 my $header = grep {/^\#CHROM/} @lines;
 my @row  = split /\t/, $header;
-if ( $row[-1] =~ /Normal/i ) {
+if ( $row[-1] eq $ctl_name ) {
     system("cp $input $output");
 }
 else {
