@@ -26,23 +26,23 @@ module load CBI samtools
     -O /path/to/${sample}.read-orientation-model.tar.gz
 ##
 ./softwares/gatk-4.1.2.0/gatk FilterMutectCalls \
-    -V /path/to/${sample}.somatic_m2.vcf.gz \
+    -V /path/to/${sample}.MT2.vcf.gz \
     -R $genome \
     --ob-priors /path/to/${sample}.read-orientation-model.tar.gz \
-    -O /path/to/${sample}.somatic_m2_filtered.vcf.gz
+    -O /path/to/${sample}.MT2_filtered.vcf.gz
 ##
 ./softwares/gatk-4.1.2.0/gatk LeftAlignAndTrimVariants \
-    -O /path/to/${sample}.somatic_m2_filtered_SplitMulti.vcf \
+    -O /path/to/${sample}.MT2_Final.vcf \
     -R $genome \
-    -V /path/to/${sample}.somatic_m2_filtered.vcf.gz \
+    -V /path/to/${sample}.MT2_filtered.vcf.gz \
     -no-trim true --split-multi-allelics true
 #
 table_annovar.pl \
-    /path/to/${sample}.somatic_m2_filtered_SplitMulti.vcf \
+    /path/to/${sample}.MT2_Final.vcf \
     /path/to/Annovar/humandb --buildver hg19 \
     --vcfinput  --otherinfo  --thread 5 --remove \
     --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic89,cbio2019jun,clinvar2019mar,ljb26_all \
-    --outfile /path/to/${sample}.MT2.annovar
+    --outfile /path/to/${sample}.MT2_Final.annovar
 
 
 ##Tool2: FreeBayes
@@ -68,15 +68,15 @@ python2 ./softwares/freebayes_scripts/split_multiallelics.py \
     /path/to/${sample}.FB.MAF.Q20.multial.vcf
 
 bcftools norm -f $genome /path/to/${sample}.FB.MAF.Q20.multial.vcf \
-    |awk '{if (match($1,"#")) print; else {n=split($0,arr,"\t"); arr[4]=toupper(arr[4]); arr[5]=toupper(arr[5]); fix=arr[1]; for (i=2;i<=n;i++) fix=fix"\t"arr[i]; print fix}}' > /path/to/${sample}.FB.Final.vcf
+    |awk '{if (match($1,"#")) print; else {n=split($0,arr,"\t"); arr[4]=toupper(arr[4]); arr[5]=toupper(arr[5]); fix=arr[1]; for (i=2;i<=n;i++) fix=fix"\t"arr[i]; print fix}}' > /path/to/${sample}.FB_Final.vcf
 
 #
 table_annovar.pl \
-    /path/to/${sample}.FB.Final.vcf \
+    /path/to/${sample}.FB_Final.vcf \
     /path/to/Annovar/humandb --buildver hg19 \
     --vcfinput  --otherinfo  --thread 5 --remove \
     --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic89,cbio2019jun,clinvar2019mar,ljb26_all \
-    --outfile /path/to/${sample}.FB.annovar
+    --outfile /path/to/${sample}.FB_Final.annovar
 
 ##Tool3: Bcftools (cancer hotspot locations only)
 bcftools mpileup -O v -f $genome \
@@ -85,16 +85,16 @@ bcftools mpileup -O v -f $genome \
     -q 1 -Q 20 -d 100000 -L 100000 \
     | bcftools call - -c -A > /path/to/${sample}.HS.vcf
 
-bcftools norm -O v -o /path/to/${sample}.HS.Final.vcf \
+bcftools norm -O v -o /path/to/${sample}.HS_Final.vcf \
     -f $genome \
     /path/to/${sample}.HS.vcf
 
 table_annovar.pl \
-    /path/to/${sample}.HS.vcf \
+    /path/to/${sample}.HS_Final.vcf \
     /path/to/Annovar/humandb --buildver hg19 \
     --vcfinput  --otherinfo  --thread 5 --remove \
     --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic89,cbio2019jun,clinvar2019mar,ljb26_all \
-    --outfile /path/to/${sample}.HS.annovar
+    --outfile /path/to/${sample}.HS_Final.annovar
 
 ##Finally, filter the annovar outputs of the above three tools
 python filter_after_annovar.py ${sample}
