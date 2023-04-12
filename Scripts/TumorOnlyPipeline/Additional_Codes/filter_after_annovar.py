@@ -32,14 +32,14 @@ def Process_files(sample,datasource):
     Fileout = ""
     if datasource == "MT2":
         #Filein = f"{sample}.somatic_m2_filtered_SplitMulti.annovar.hg19_multianno.txt"
-        Filein = f"{sample}.MT2.annovar.hg19_multianno.txt"
-        Fileout = f"{sample}.MT2.annovar.hg19_multianno.Filtered.txt"
+        Filein = f"{sample}.MT2_Final.annovar.hg19_multianno.txt"
+        Fileout = f"{sample}.MT2_Final.annovar.hg19_multianno.Filtered.txt"
     elif datasource == "FB":
-        Filein = f"{sample}.FB.annovar.hg19_multianno.txt"
-        Fileout = f"{sample}.FB.annovar.hg19_multianno.Filtered.txt"
+        Filein = f"{sample}.FB_Final.annovar.hg19_multianno.txt"
+        Fileout = f"{sample}.FB_Final.annovar.hg19_multianno.Filtered.txt"
     else:
-        Filein = f"{sample}.HS.annovar.hg19_multianno.txt"
-        Fileout = f"{sample}.HS.annovar.hg19_multianno.Filtered.txt"
+        Filein = f"{sample}.HS_Final.annovar.hg19_multianno.txt"
+        Fileout = f"{sample}.HS_Final.annovar.hg19_multianno.Filtered.txt"
 
     with open(Filein,"r") as file_H:
         with open(Fileout,"w") as fileout_H:
