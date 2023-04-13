@@ -1,7 +1,9 @@
 import re
 import sys
 
-SampleName = sys.argv[1]
+path = sys.argv[1]
+SampleName = sys.argv[2]
+path = path.rstrip("/")
 
 # remove common SNPs (VAF > 0.01 in human population)
 def Filter_Common_SNP(myList):
@@ -28,18 +30,8 @@ def Filter_DP_MAF(ADs):
 
 
 def Process_files(sample,datasource):
-    Filein = ""
-    Fileout = ""
-    if datasource == "MT2":
-        #Filein = f"{sample}.somatic_m2_filtered_SplitMulti.annovar.hg19_multianno.txt"
-        Filein = f"{sample}.MT2_Final.annovar.hg19_multianno.txt"
-        Fileout = f"{sample}.MT2_Final.annovar.hg19_multianno.Filtered.txt"
-    elif datasource == "FB":
-        Filein = f"{sample}.FB_Final.annovar.hg19_multianno.txt"
-        Fileout = f"{sample}.FB_Final.annovar.hg19_multianno.Filtered.txt"
-    else:
-        Filein = f"{sample}.HS_Final.annovar.hg19_multianno.txt"
-        Fileout = f"{sample}.HS_Final.annovar.hg19_multianno.Filtered.txt"
+    Filein = f"{path}/{sample}.{datasource}_Final.annovar.hg19_multianno.txt"
+    Fileout = f"{path}/{sample}.{datasource}_Final.annovar.hg19_multianno.Filtered.txt"
 
     with open(Filein,"r") as file_H:
         with open(Fileout,"w") as fileout_H:
@@ -47,7 +39,7 @@ def Process_files(sample,datasource):
                 line = line.rstrip()
                 Columns = line.split("\t")
                 if "Func.refGene" in line:
-                    Header = Columns[0:59] + ["Depth","Ref_reads","Alt_reads","MAF","VCF_Col_FILTER","VCF_Col_INFO","VCF_Col_FORMAT","VCF_Col_Details"]
+                    Header = Columns[0:59] + ["Depth","Ref_reads","Alt_reads","MAF","VCF_Col_FILTER","VCF_Col_INFO","VCF_Col_FORMAT","VCF_Col_Sample"]
                     fileout_H.write("\t".join(Header)+"\n")
                     continue
                 # keep mutations in exonic regions, splicing sites and TERT promoter region

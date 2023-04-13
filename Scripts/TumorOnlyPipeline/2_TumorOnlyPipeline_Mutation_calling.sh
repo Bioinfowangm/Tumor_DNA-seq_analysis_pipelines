@@ -96,4 +96,5 @@ table_annovar.pl \
     --outfile /path/to/${sample}.HS_Final.annovar
 
 ##Finally, filter the annovar outputs of the above three tools
-python filter_after_annovar_TumorOnly.py ${sample}
+#Two parameters are required: the path of the folder that contains VCFs and ANNOVAR outputs, and the name of the sample (corresponding to sample names of the #CHROM row of VCF)
+python filter_after_annovar_TumorOnly.py /path/to/mutations ${sample}

@@ -18,7 +18,7 @@ gatk Mutect2
     -L /path/to/intervel_list_NoCentromereTelomere.bed \
     -I /path/to/${normal}_xx.bam \
     -I /path/to/${tumor}_xx.bam \
-    -normal $normal_name \
+    -normal $normal \
     --germline-resource /path/to/af-only-gnomad.raw.sites.hg19.vcf.gz \
     --af-of-alleles-not-in-resource 0.001 \
     --disable-read-filter MateOnSameContigOrNoMappedMateReadFilter \
@@ -65,7 +65,7 @@ freebayes-parallel \
     >/path/to/${tumor}.FB.vcf
 
     # reorder vcf to make sure that normal is in the last column
-perl checkorder.pl /path/to/${tumor}.FB.vcf /path/to/${tumor}.FB.reorder.vcf $normal_name
+perl checkorder.pl /path/to/${tumor}.FB.vcf /path/to/${tumor}.FB.reorder.vcf $normal
 
 python gmiMafAdder.py \
     /path/to/${tumor}.FB.reorder.vcf \
@@ -137,11 +137,23 @@ gatk HaplotypeCaller
     -R /path/to/genome \
     -L /path/to/hg19_RefSeq_CDSunique_add10bp.bed \
     -I /path/to/${normal}_xx.bam \
-    -O /path/to/${normal}.HT.vcf -ERC GVCF
+    -O /path/to/${normal}.HC.vcf.gz
+
+bcftools filter -O z -o ${normal}.HC_filtered.vcf.gz -i 'FORMAT/DP>=10' /path/to/${normal}.HC.vcf.gz
 
 gatk LeftAlignAndTrimVariants
-    -O /path/to/${normal}.HT.vcf \
+    -O /path/to/${normal}.HC_Final.vcf \
     -R /path/to/genome \
-    -V /path/to/${normal}.HT_Final.vcf \
+    -V /path/to/${normal}.HC_filtered.vcf.gz \
     -no-trim true --split-multi-allelics true
 
+table_annovar.pl \
+    /path/to/${normal}.HT_Final.vcf \
+    /path/to/Annovar/humandb --buildver hg19 \
+    --vcfinput  --otherinfo  --thread 5 --remove \
+    --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic89,cbio2019jun,clinvar2019mar,ljb26_all \
+    --outfile /path/to/${normal}.HC_Final.annovar
+
+# Filter the ANNOVAR output of Mutect2, FreeBayes, Bcftools and HaplotypeCaller. 
+#Three parameters are required: the path of the folder that contains VCFs and ANNOVAR outputs, and the name of the tumor and normal samples (corresponding to samples names of the #CHROM row of VCF)
+python filter_after_annovar_TumorNormal.py /path/to/mutations/ $tumor $normal
