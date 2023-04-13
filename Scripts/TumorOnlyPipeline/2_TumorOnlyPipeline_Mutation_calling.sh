@@ -44,7 +44,6 @@ table_annovar.pl \
     --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic89,cbio2019jun,clinvar2019mar,ljb26_all \
     --outfile /path/to/${sample}.MT2_Final.annovar
 
-
 ##Tool2: FreeBayes
 freebayes \
     -f $genome \
@@ -97,4 +96,4 @@ table_annovar.pl \
     --outfile /path/to/${sample}.HS_Final.annovar
 
 ##Finally, filter the annovar outputs of the above three tools
-python filter_after_annovar.py ${sample}
+python filter_after_annovar_TumorOnly.py ${sample}
