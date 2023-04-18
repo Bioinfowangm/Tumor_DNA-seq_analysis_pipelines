@@ -1,9 +1,12 @@
 import re
 import sys
 
-path = sys.argv[1]
-SampleName = sys.argv[2]
-path = path.rstrip("/")
+#Recommended suffix of input name: "_Final.annovar.hg19_multianno.txt"
+#Recommended suffix of output name: "_Final.annovar.hg19_multianno_Filtered.txt"
+#Source = "MT2" or "FB", or "HS"
+Filein = sys.argv[1]
+Fileout = sys.argv[2]
+Source = sys.argv[3]
 
 # remove common SNPs (VAF > 0.01 in human population)
 def Filter_Common_SNP(myList):
@@ -29,9 +32,7 @@ def Filter_DP_MAF(ADs):
     return PASS, Depth, MAF
 
 
-def Process_files(sample,datasource):
-    Filein = f"{path}/{sample}.{datasource}_Final.annovar.hg19_multianno.txt"
-    Fileout = f"{path}/{sample}.{datasource}_Final.annovar.hg19_multianno.Filtered.txt"
+def Process_files(Filein, Fileout, Source):
 
     with open(Filein,"r") as file_H:
         with open(Fileout,"w") as fileout_H:
@@ -44,9 +45,9 @@ def Process_files(sample,datasource):
                     continue
                 # keep mutations in exonic regions, splicing sites and TERT promoter region
                 if Columns[5] == "exonic" or Columns[5] == "splicing" or (Columns[5] == "upstream" and Columns[6] == "TERT"):
-                    if datasource == "MT2":
+                    if Source == "MT2":
                         ADs = Columns[-1].rsplit(":")[1].rsplit(",")
-                    elif datasource == "FB":
+                    elif Source == "FB":
                         ADs = Columns[-1].rsplit(":")[3].rsplit(",")
                     else:
                         pattern = r"DP4=(\d+),(\d+),(\d+),(\d+)"
@@ -67,6 +68,4 @@ def Process_files(sample,datasource):
 
                         fileout_H.write("\t".join(newColumns)+"\n")
 
-Process_files(SampleName,"MT2")
-Process_files(SampleName,"FB")
-Process_files(SampleName,"HS")
+Process_files(Filein,Fileout,Source)

@@ -96,5 +96,7 @@ table_annovar.pl \
     --outfile /path/to/${sample}.HS_Final.annovar
 
 ##Finally, filter the annovar outputs of the above three tools
-#Two parameters are required: the path of the folder that contains VCFs and ANNOVAR outputs, and the name of the sample (corresponding to sample names of the #CHROM row of VCF)
-python filter_after_annovar_TumorOnly.py /path/to/mutations ${sample}
+#Three parameters are required: the ANNOVAR file (to be filtered), the filtered output, and the datasource(MT2, FB or HS(corresponding to hotspots))
+python filter_after_annovar_TumorOnly.py /path/to/${sample}.MT2_Final.annovar.hg19_multianno.txt /path/to/${sample}.MT2_Final.annovar.hg19_multianno.Filtered.txt MT2
+python filter_after_annovar_TumorOnly.py /path/to/${sample}.FB_Final.annovar.hg19_multianno.txt /path/to/${sample}.FB_Final.annovar.hg19_multianno.Filtered.txt FB 
+python filter_after_annovar_TumorOnly.py /path/to/${sample}.FB_Final.annovar.hg19_multianno.txt /path/to/${sample}.FB_Final.annovar.hg19_multianno.Filtered.txt HS 
