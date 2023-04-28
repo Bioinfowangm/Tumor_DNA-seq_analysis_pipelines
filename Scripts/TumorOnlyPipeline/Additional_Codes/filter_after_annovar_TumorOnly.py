@@ -11,7 +11,7 @@ Source = sys.argv[3]
 # remove common SNPs (VAF > 0.01 in human population)
 def Filter_Common_SNP(myList):
     indexes = list(range(10,29))
-    indexes.append(30)
+    #indexes.append(30)
     PASS = True
     for i in indexes:
         if myList[i] != "." and float(myList[i]) > 0.01:
