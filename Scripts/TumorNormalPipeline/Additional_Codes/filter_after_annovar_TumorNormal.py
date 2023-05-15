@@ -82,7 +82,7 @@ def Process_MT2FB(sample,datasource):
     Filein = f"{path}/{sample}.{datasource}_Final.annovar.hg19_multianno.txt"
     Fileout = f"{path}/{sample}.{datasource}_Final.annovar.hg19_multianno.Filtered.txt"
 
-    Vcfin = f"{sample}.{datasource}_Final.vcf"
+    Vcfin = f"{path}/{sample}.{datasource}_Final.vcf"
     VcfHeader = ""
     with open(Vcfin, "r") as vcf_H:
         for line in vcf_H:
