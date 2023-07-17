@@ -1,10 +1,11 @@
 import re
 import sys
 
-path = sys.argv[1]
-TumorName = sys.argv[2]
-NormalName = sys.argv[3]
-path = path.rstrip("/")
+TumorName = sys.argv[1]
+NormalName = sys.argv[2]
+Filein = sys.argv[3]
+Vcfin = sys.argv[4]
+Fileout = sys.argv[5]
 
 # remove common SNPs (VAF > 0.01 in human population)
 def Filter_Common_SNP(myList):
@@ -40,49 +41,8 @@ def Filter_DP_MAF_TN(Read_Info):
             PASS = False
     return PASS, MAF
 
-# process the final outputs of Bcftools and HaplotypeCaller, which both have only one sample
-def Process_HSHC(sample,datasource):
-    Filein = f"{path}/{sample}.{datasource}_Final.annovar.hg19_multianno.txt"
-    Fileout = f"{path}/{sample}.{datasource}_Final.annovar.hg19_multianno.Filtered.txt"
-
-    with open(Filein,"r") as file_H:
-        with open(Fileout,"w") as fileout_H:
-            for line in file_H:
-                line = line.rstrip()
-                Columns = line.split("\t")
-                if "Func.refGene" in line:
-                    Header = Columns[0:59] + ["Depth","Ref_reads","Alt_reads","MAF","VCF_Col_FILTER","VCF_Col_INFO","VCF_Col_FORMAT","VCF_Col_Details"]
-                    fileout_H.write("\t".join(Header)+"\n")
-                    continue
-                # keep mutations in exonic regions, splicing sites and TERT promoter region
-                if Columns[5] == "exonic" or Columns[5] == "splicing" or (Columns[5] == "upstream" and Columns[6] == "TERT"):
-                    if datasource == "HC":
-                        ADs = Columns[-1].rsplit(":")[1].rsplit(",")
-                    else:
-                        pattern = r"DP4=(\d+),(\d+),(\d+),(\d+)"
-                        match = re.search(pattern,line)
-                        ref = int(match.group(1)) + int(match.group(2))
-                        alt = int(match.group(3)) + int(match.group(4))
-                        ADs = [ref,alt]
-
-                    ADs = [int(item) for item in ADs]
-                    Depth = sum(ADs)
-
-                    PASS1 = Filter_Common_SNP(Columns)
-                    PASS2, Depth, MAF = Filter_DP_MAF_1sample(ADs)
-                    if PASS1 == True and PASS2 == True:
-                        AD_list = [Depth,ADs[0],ADs[1],MAF]
-                        AD_list = [str(i) for i in AD_list]
-                        newColumns = Columns[0:59] + AD_list + Columns[69:73]
-
-                        fileout_H.write("\t".join(newColumns)+"\n")
-
 # process the final outputs of Mutect2 and FreeBayes, which both have two samples (both tumor and normal)
-def Process_MT2FB(sample,datasource):
-    Filein = f"{path}/{sample}.{datasource}_Final.annovar.hg19_multianno.txt"
-    Fileout = f"{path}/{sample}.{datasource}_Final.annovar.hg19_multianno.Filtered.txt"
-
-    Vcfin = f"{path}/{sample}.{datasource}_Final.vcf"
+def Process_MT2FB(TumorName,NormalName, Filein, Vcfin, Fileout):
     VcfHeader = ""
     with open(Vcfin, "r") as vcf_H:
         for line in vcf_H:
@@ -97,14 +57,14 @@ def Process_MT2FB(sample,datasource):
                 line = line.rstrip()
                 Columns = line.split("\t")
                 if "Func.refGene" in line:
-                    Header = Columns[0:59]+ \
+                    Header = Columns[0:60]+ \
                     ["Normal_Depth","Normal_Ref_reads","Normal_Alt_reads","Tumor_Depth","Tumor_Ref_reads","Tumor_Alt_reads","Tumor_MAF"]+ \
                     ["VCF_Col_" + i for i in VcfHeader[6:11]]
                     fileout_H.write("\t".join(Header)+"\n")
                     continue
 
                 if Columns[5] == "exonic" or Columns[5] == "splicing" or (Columns[5] == "upstream" and Columns[6] == "TERT"):
-                    if datasource == "MT2":
+                    if "MT2_Final" in Filein:
                         if VcfHeader[-1] == NormalName:
                             Normal_Depth= Columns[-1].rsplit(":")[3]
                             NRef,NAlt = Columns[-1].rsplit(":")[1].rsplit(",")
@@ -115,7 +75,7 @@ def Process_MT2FB(sample,datasource):
                             NRef,NAlt = Columns[-2].rsplit(":")[1].rsplit(",")
                             Tumor_Depth= Columns[-1].rsplit(":")[3]
                             TRef,TAlt = Columns[-1].rsplit(":")[1].rsplit(",")
-                    elif datasource == "FB":
+                    elif "FB_Final" in Filein:
                         if Columns[-1].rsplit(":")[-1]== "0" or Columns[-2].rsplit(":")[-1]== "0":
                             continue
                         if VcfHeader[-1] == NormalName:
@@ -140,11 +100,7 @@ def Process_MT2FB(sample,datasource):
                     PASS2, MAF = Filter_DP_MAF_TN(Read_Info_int)
 
                     if PASS1 == True and PASS2 == True:
-                        newColumns = Columns[0:59] + Read_Info + [str(MAF)] + Columns[69:74]
+                        newColumns = Columns[0:60] + Read_Info + [str(MAF)] + Columns[69:]
                         fileout_H.write("\t".join(newColumns)+"\n")
 
-Process_HSHC(TumorName,"HS")
-Process_HSHC(NormalName,"HC")
-
-Process_MT2FB(TumorName,"MT2")
-Process_MT2FB(TumorName,"FB")
+Process_MT2FB(TumorName,NormalName, Filein, Vcfin, Fileout)
