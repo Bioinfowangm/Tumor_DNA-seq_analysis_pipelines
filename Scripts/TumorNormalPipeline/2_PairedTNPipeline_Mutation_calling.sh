@@ -47,7 +47,7 @@ table_annovar.pl \
     /path/to/${tumor}.MT2_Final.vcf \
     /path/to/Annovar/humandb --buildver hg19 \
     --vcfinput  --otherinfo  --thread 5 --remove \
-    --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic89,cbio2019jun,clinvar2019mar,ljb26_all \
+    --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic98,cbio2019jun,clinvar_20221231,ljb26_all \
     --outfile /path/to/${tumor}.MT2_Final.annovar
 
 # B) FreeBayes
@@ -96,7 +96,7 @@ table_annovar.pl \
     /path/to/${sample}.FB_Final.vcf \
     /path/to/Annovar/humandb --buildver hg19 \
     --vcfinput  --otherinfo  --thread 5 --remove \
-    --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic89,cbio2019jun,clinvar2019mar,ljb26_all \
+    --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic98,cbio2019jun,clinvar_20221231,ljb26_all \
     --outfile /path/to/${sample}.FB_Final.annovar
 
 # C) Strelka2 (For somatic indels only, although SNVs are also called. Strelka2 website recommends using Manta first and then Strelka2 for indels, but from my test it did not seem to add much benefit)
@@ -129,7 +129,7 @@ table_annovar.pl \
     /path/to/${tumor}.HS_Final.vcf \
     /path/to/Annovar/humandb --buildver hg19 \
     --vcfinput  --otherinfo  --thread 5 --remove \
-    --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic89,cbio2019jun,clinvar2019mar,ljb26_all \
+    --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic98,cbio2019jun,clinvar_20221231,ljb26_all \
     --outfile /path/to/${tumor}.HS_Final.annovar
 
 # E) HaplotypeCaller (Germline mutations)
@@ -151,9 +151,14 @@ table_annovar.pl \
     /path/to/${normal}.HT_Final.vcf \
     /path/to/Annovar/humandb --buildver hg19 \
     --vcfinput  --otherinfo  --thread 5 --remove \
-    --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic89,cbio2019jun,clinvar2019mar,ljb26_all \
+    --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic98,cbio2019jun,clinvar_20221231,ljb26_all \
     --outfile /path/to/${normal}.HC_Final.annovar
 
-# Filter the ANNOVAR output of Mutect2, FreeBayes, Bcftools and HaplotypeCaller. 
-#Three parameters are required: the path of the folder that contains VCFs and ANNOVAR outputs, and the name of the tumor and normal samples (corresponding to samples names of the #CHROM row of VCF)
-python filter_after_annovar_TumorNormal.py /path/to/mutations/ $tumor $normal
+# Filter the ANNOVAR output of Bcftools and HaplotypeCaller. 
+#Two parameters are required: The input pre-filtered file and output post-filtered file
+python ./Additional_Codes/filter_after_annovar_TumorNormal_HSHC.py ${sample}.HS_Final.annovar.hg19_multianno.txt ${sample}.HS_Final.annovar.hg19_multianno_Filtered.txt
+python ./Additional_Codes/filter_after_annovar_TumorNormal_HSHC.py ${sample}.HC_Final.annovar.hg19_multianno.txt ${sample}.HC_Final.annovar.hg19_multianno_Filtered.txt
+# Filter the ANNOVAR output of Mutect2 and FreeBayes 
+#Five parameters are required: tumor sample name, normal sample name, input pre-filtered file, the *Final.vcf and output post-filtered file
+python ./Additional_Codes/filter_after_annovar_TumorNormal_MT2FB.py $tumor $normal ${sample}.MT2_Final.annovar.hg19_multianno.txt ${sample}.MT2_Final.vcf  ${sample}.MT2_Final.annovar.hg19_multianno_Filtered.txt
+python ./Additional_Codes/filter_after_annovar_TumorNormal_MT2FB.py $tumor $normal ${sample}.FB_Final.annovar.hg19_multianno.txt ${sample}.FB_Final.vcf  ${sample}.FB_Final.annovar.hg19_multianno_Filtered.txt

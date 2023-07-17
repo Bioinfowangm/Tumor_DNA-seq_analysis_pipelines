@@ -46,7 +46,7 @@ def Process_HSHC(Filein, Fileout):
                 line = line.rstrip()
                 Columns = line.split("\t")
                 if "Func.refGene" in line:
-                    Header = Columns[0:60] + ["Depth","Ref_reads","Alt_reads","MAF","VCF_Col_FILTER","VCF_Col_INFO","VCF_Col_FORMAT","VCF_Col_Details"]
+                    Header = Columns[0:64] + ["Depth","Ref_reads","Alt_reads","MAF","VCF_Col_FILTER","VCF_Col_INFO","VCF_Col_FORMAT","VCF_Col_Details"]
                     fileout_H.write("\t".join(Header)+"\n")
                     continue
                 # keep mutations in exonic regions, splicing sites and TERT promoter region
@@ -68,7 +68,7 @@ def Process_HSHC(Filein, Fileout):
                     if PASS1 == True and PASS2 == True:
                         AD_list = [Depth,ADs[0],ADs[1],MAF]
                         AD_list = [str(i) for i in AD_list]
-                        newColumns = Columns[0:60] + AD_list + Columns[69:]
+                        newColumns = Columns[0:64] + AD_list + Columns[73:]
 
                         fileout_H.write("\t".join(newColumns)+"\n")
 

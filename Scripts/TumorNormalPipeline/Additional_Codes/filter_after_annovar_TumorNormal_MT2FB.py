@@ -57,7 +57,7 @@ def Process_MT2FB(TumorName,NormalName, Filein, Vcfin, Fileout):
                 line = line.rstrip()
                 Columns = line.split("\t")
                 if "Func.refGene" in line:
-                    Header = Columns[0:60]+ \
+                    Header = Columns[0:64]+ \
                     ["Normal_Depth","Normal_Ref_reads","Normal_Alt_reads","Tumor_Depth","Tumor_Ref_reads","Tumor_Alt_reads","Tumor_MAF"]+ \
                     ["VCF_Col_" + i for i in VcfHeader[6:11]]
                     fileout_H.write("\t".join(Header)+"\n")
@@ -100,7 +100,7 @@ def Process_MT2FB(TumorName,NormalName, Filein, Vcfin, Fileout):
                     PASS2, MAF = Filter_DP_MAF_TN(Read_Info_int)
 
                     if PASS1 == True and PASS2 == True:
-                        newColumns = Columns[0:60] + Read_Info + [str(MAF)] + Columns[69:]
+                        newColumns = Columns[0:64] + Read_Info + [str(MAF)] + Columns[73:]
                         fileout_H.write("\t".join(newColumns)+"\n")
 
 Process_MT2FB(TumorName,NormalName, Filein, Vcfin, Fileout)

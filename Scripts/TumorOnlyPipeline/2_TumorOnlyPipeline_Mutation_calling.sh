@@ -41,7 +41,7 @@ table_annovar.pl \
     /path/to/${sample}.MT2_Final.vcf \
     /path/to/Annovar/humandb --buildver hg19 \
     --vcfinput  --otherinfo  --thread 5 --remove \
-    --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic89,cbio2019jun,clinvar2019mar,ljb26_all \
+    --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic98,cbio2019jun,clinvar_20221231,ljb26_all \
     --outfile /path/to/${sample}.MT2_Final.annovar
 
 ##Tool2: FreeBayes
@@ -74,7 +74,7 @@ table_annovar.pl \
     /path/to/${sample}.FB_Final.vcf \
     /path/to/Annovar/humandb --buildver hg19 \
     --vcfinput  --otherinfo  --thread 5 --remove \
-    --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic89,cbio2019jun,clinvar2019mar,ljb26_all \
+    --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic98,cbio2019jun,clinvar_20221231,ljb26_all \
     --outfile /path/to/${sample}.FB_Final.annovar
 
 ##Tool3: Bcftools (cancer hotspot locations only)
