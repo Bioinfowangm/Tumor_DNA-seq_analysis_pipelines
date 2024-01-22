@@ -42,7 +42,7 @@ def Filter_DP_MAF_TN(Read_Info):
     return PASS, MAF
 
 # process the final outputs of Mutect2 and FreeBayes, which both have two samples (both tumor and normal)
-def Process_MT2FB(TumorName,NormalName, Filein, Vcfin, Fileout):
+def Process_Data(TumorName,NormalName, Filein, Vcfin, Fileout):
     VcfHeader = ""
     with open(Vcfin, "r") as vcf_H:
         for line in vcf_H:
@@ -93,6 +93,16 @@ def Process_MT2FB(TumorName,NormalName, Filein, Vcfin, Fileout):
                             TRef = Columns[-1].rsplit(":")[3].rsplit(",")[0]
                             TAlt = Columns[-1].rsplit(":")[-3]
 
+                    elif "SK2_Final" in Filein:
+                        if Columns[-1].rsplit(":")[-1]== "0" or Columns[-2].rsplit(":")[-1]== "0":
+                            continue
+                        Normal_Depth= Columns[-2].rsplit(":")[1]
+                        NRef = Columns[-2].rsplit(":")[3].rsplit(",")[0]
+                        NAlt = Columns[-2].rsplit(":")[4].rsplit(",")[0]
+                        Tumor_Depth= Columns[-1].rsplit(":")[1]
+                        TRef = Columns[-1].rsplit(":")[4].rsplit(",")[0]
+                        TAlt = Columns[-1].rsplit(":")[4].rsplit(",")[0]
+
                     Read_Info = [Normal_Depth,NRef,NAlt,Tumor_Depth,TRef,TAlt]
                     Read_Info_int = [int(x) for x in Read_Info]
 
@@ -103,4 +113,4 @@ def Process_MT2FB(TumorName,NormalName, Filein, Vcfin, Fileout):
                         newColumns = Columns[0:64] + Read_Info + [str(MAF)] + Columns[73:]
                         fileout_H.write("\t".join(newColumns)+"\n")
 
-Process_MT2FB(TumorName,NormalName, Filein, Vcfin, Fileout)
+Process_Data(TumorName,NormalName, Filein, Vcfin, Fileout)

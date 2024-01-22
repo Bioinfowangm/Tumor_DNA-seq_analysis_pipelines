@@ -114,6 +114,17 @@ configureStrelkaSomaticWorkflow.py \
     # Run mutation calling step
 cd /path/to/analysis; runWorkflow.py -m local -j 6
 
+    # Only take the Indels and do ANNOVAR
+python ./Additional_Codes/SK2_for_ANNOVAR.py /path/to/strelka/variants/somatic.indels.vcf.gz ${tumor}.SK2_Final.vcf
+
+table_annovar.pl \
+    /path/to/${tumor}.SK2_Final.vcf \
+    /path/to/Annovar/humandb --buildver hg19 \
+    --vcfinput  --otherinfo  --thread 5 --remove \
+    --operation g,f,f,f,f,f,f,f,f,f,f,f --protocol refGene,exac03,gnomad_exome,esp6500siv2_all,1000g2015aug_all,avsnp150,ucsf500normT,ucsf500normN,cosmic98,cbio2019jun,clinvar_20221231,ljb26_all \
+    --outfile /path/to/${tumor}.SK2_Final.annovar
+
+
 # D) Bcftools (cancer hotspot locations only)
 bcftools mpileup -O v -f $genome \
     -R ./resources/hotspots_coordinate_merged.bed \
@@ -160,5 +171,6 @@ python ./Additional_Codes/filter_after_annovar_TumorNormal_HSHC.py ${sample}.HS_
 python ./Additional_Codes/filter_after_annovar_TumorNormal_HSHC.py ${sample}.HC_Final.annovar.hg19_multianno.txt ${sample}.HC_Final.annovar.hg19_multianno_Filtered.txt
 # Filter the ANNOVAR output of Mutect2 and FreeBayes 
 #Five parameters are required: tumor sample name, normal sample name, input pre-filtered file, the *Final.vcf and output post-filtered file
-python ./Additional_Codes/filter_after_annovar_TumorNormal_MT2FB.py $tumor $normal ${sample}.MT2_Final.annovar.hg19_multianno.txt ${sample}.MT2_Final.vcf  ${sample}.MT2_Final.annovar.hg19_multianno_Filtered.txt
-python ./Additional_Codes/filter_after_annovar_TumorNormal_MT2FB.py $tumor $normal ${sample}.FB_Final.annovar.hg19_multianno.txt ${sample}.FB_Final.vcf  ${sample}.FB_Final.annovar.hg19_multianno_Filtered.txt
+python ./Additional_Codes/filter_after_annovar_TumorNormal_MT2FBSK2.py $tumor $normal ${sample}.MT2_Final.annovar.hg19_multianno.txt ${sample}.MT2_Final.vcf  ${sample}.MT2_Final.annovar.hg19_multianno_Filtered.txt
+python ./Additional_Codes/filter_after_annovar_TumorNormal_MT2FBSK2.py $tumor $normal ${sample}.FB_Final.annovar.hg19_multianno.txt ${sample}.FB_Final.vcf  ${sample}.FB_Final.annovar.hg19_multianno_Filtered.txt
+python ./Additional_Codes/filter_after_annovar_TumorNormal_MT2FBSK2.py $tumor $normal ${sample}.SK2_Final.annovar.hg19_multianno.txt ${sample}.SK2_Final.vcf  ${sample}.SK2_Final.annovar.hg19_multianno_Filtered.txt
