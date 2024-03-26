@@ -52,7 +52,13 @@ def Process_HSHC(Filein, Fileout):
                 # keep mutations in exonic regions, splicing sites and TERT promoter region
                 if Columns[5] == "exonic" or Columns[5] == "splicing" or (Columns[5] == "upstream" and Columns[6] == "TERT"):
                     if "HC_Final" in Filein:
-                        ADs = Columns[-1].rsplit(":")[1].rsplit(",")
+                        Formats = Columns[-2].rsplit(":")
+                        if "AD" in Formats:
+                            ADindex = Formats.index("AD")
+                            ADs = Columns[-1].rsplit(":")[ADindex].rsplit(",")
+                        else:
+                            continue
+
                     else:
                         pattern = r"DP4=(\d+),(\d+),(\d+),(\d+)"
                         match = re.search(pattern,line)
