@@ -15,14 +15,14 @@ Patient_Name= " "
 Gender="x/y" # 'x': female; 'y': male
 
 #${*ALL_TUMOR_BAM*}: bam of all tumor samples
-#${*ALL_FEMALE_GERMLINE_BAM}: bam of all germline female samples
+#${*ALL_GERMLINE_BAM}: bam of all germline samples (it should be OK to mix male and female patients)
 
 # 1) CNVkit for copy number analysis
     # 1.1a) The normal/germline BAMs are used to generate a reference.cnn. If there is no normal/germline for a specific sequencing run, samples from other run (with the same capture strategy) can be used. Merging more normal/germline BAMs would be optimal. Importantly, pre-built reference.cnn file can also be applied for new samples.
     # Therefore, if the reference.cnn is not available, then run (all samples at once):
 cnvkit.py batch \
     ${*ALL_TUMOR_BAM*} \
-    --normal ${*ALL_FEMALE_GERMLINE_BAM} \
+    --normal ${*ALL_GERMLINE_BAM} \
     --targets $Target_Interval \
     --annotate ../Related_Files/refFlat.txt \
     --fasta $REFERENCE_GENOME \
